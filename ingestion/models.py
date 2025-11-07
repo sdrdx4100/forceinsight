@@ -7,6 +7,7 @@ from datasets.models import MeasurementSet
 
 class FileMetadata(models.Model):
     path = models.CharField('ファイルパス', max_length=512)
+    uploaded_file = models.FileField('アップロードファイル', upload_to='uploads/', blank=True, null=True)
     size = models.BigIntegerField('ファイルサイズ', default=0)
     checksum = models.CharField('ハッシュ', max_length=128)
     source = models.CharField('取得元', max_length=128, blank=True)
