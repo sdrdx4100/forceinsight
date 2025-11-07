@@ -8,9 +8,11 @@ from analytics.views import MeasurementPlotView
 from catalog.api import VehicleViewSet
 from datasets.api import MeasurementSetViewSet, ChannelDefViewSet, ChannelMapViewSet
 from ingestion.api import IngestionJobViewSet, FileMetadataViewSet
+from ingestion.views import DataUploadView
 from knowledge.api import UsageLogViewSet, SavedSearchViewSet
 from labeling.api import LabelSchemaViewSet, LabelViewSet, AnnotationViewSet
 from search.api import MeasurementSearchView
+from search.views import AdvancedMeasurementSearchView
 from accounts.api import UserViewSet
 from ops.views import HealthCheckView
 from export.views import MeasurementCSVExportView
@@ -33,6 +35,7 @@ router.register(r'analytics/dashboards', DashboardViewSet)
 
 urlpatterns = [
     path('jet/', include('jet.urls', 'jet')),
+    path('jet/dashboard/', include('jet.dashboard.urls', 'jet-dashboard')),
     path('admin/', admin.site.urls),
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
     path('api/schema/swagger-ui/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
@@ -42,5 +45,7 @@ urlpatterns = [
     path('api/', include(router.urls)),
     path('visualizations/measurement/<int:pk>/', MeasurementPlotView.as_view(), name='measurement-plot'),
     path('export/measurement/<int:pk>/csv/', MeasurementCSVExportView.as_view(), name='measurement-export-csv'),
+    path('ingestion/upload/', DataUploadView.as_view(), name='data-upload'),
+    path('search/advanced/', AdvancedMeasurementSearchView.as_view(), name='advanced-search'),
     path('health/', HealthCheckView.as_view(), name='health-check'),
 ]

@@ -1,0 +1,133 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1 class="title">高度な計測データ検索</h1>
+<p class="subtitle">複数の条件を組み合わせて計測データを探索できます。</p>
+
+<form method="get" class="box">
+    {% if form.non_field_errors %}
+    <div class="notification is-danger">
+        {% for error in form.non_field_errors %}
+        <p>{{ error }}</p>
+        {% endfor %}
+    </div>
+    {% endif %}
+    <div class="columns is-multiline">
+        <div class="column is-one-third">
+            <label class="label" for="id_project">{{ form.project.label }}</label>
+            <div class="control">{{ form.project }}</div>
+            {% for error in form.project.errors %}
+            <p class="help is-danger">{{ error }}</p>
+            {% endfor %}
+        </div>
+        <div class="column is-one-third">
+            <label class="label" for="id_vehicle">{{ form.vehicle.label }}</label>
+            <div class="control">{{ form.vehicle }}</div>
+            {% for error in form.vehicle.errors %}
+            <p class="help is-danger">{{ error }}</p>
+            {% endfor %}
+        </div>
+        <div class="column is-one-third">
+            <label class="label" for="id_label">{{ form.label.label }}</label>
+            <div class="control">{{ form.label }}</div>
+            {% for error in form.label.errors %}
+            <p class="help is-danger">{{ error }}</p>
+            {% endfor %}
+        </div>
+        <div class="column is-one-third">
+            <label class="label" for="id_channel">{{ form.channel.label }}</label>
+            <div class="control">{{ form.channel }}</div>
+            {% for error in form.channel.errors %}
+            <p class="help is-danger">{{ error }}</p>
+            {% endfor %}
+        </div>
+        <div class="column is-one-third">
+            <label class="label" for="id_period_from">{{ form.period_from.label }}</label>
+            <div class="control">{{ form.period_from }}</div>
+            <p class="help">YYYY-MM-DD 形式で入力してください。</p>
+            {% for error in form.period_from.errors %}
+            <p class="help is-danger">{{ error }}</p>
+            {% endfor %}
+        </div>
+        <div class="column is-one-third">
+            <label class="label" for="id_period_to">{{ form.period_to.label }}</label>
+            <div class="control">{{ form.period_to }}</div>
+            {% for error in form.period_to.errors %}
+            <p class="help is-danger">{{ error }}</p>
+            {% endfor %}
+        </div>
+        <div class="column is-full">
+            <label class="label" for="id_text">{{ form.text.label }}</label>
+            <div class="control">{{ form.text }}</div>
+            {% for error in form.text.errors %}
+            <p class="help is-danger">{{ error }}</p>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="field is-grouped">
+        <div class="control">
+            <button type="submit" class="button is-link">検索</button>
+        </div>
+        <div class="control">
+            <a href="" class="button is-light">リセット</a>
+        </div>
+    </div>
+</form>
+
+{% if result_count %}
+<h2 class="title is-4">検索結果 ({{ result_count }} 件)</h2>
+<table class="table is-fullwidth is-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>タイトル</th>
+            <th>プロジェクト</th>
+            <th>車両</th>
+            <th>計測日時</th>
+            <th>条件</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for result in results %}
+        <tr>
+            <td>{{ result.id }}</td>
+            <td>{{ result.title }}</td>
+            <td>{{ result.project }}</td>
+            <td>{{ result.vehicle }}</td>
+            <td>{{ result.run_at|date:"Y-m-d H:i" }}</td>
+            <td><pre class="is-size-7">{{ result.conditions_text|default:"-" }}</pre></td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% elif form.is_bound %}
+<p>条件に一致する結果は見つかりませんでした。</p>
+{% endif %}
+
+{% if facets.project %}
+<h3 class="title is-5">プロジェクト分布</h3>
+<div class="tags">
+    {% for item in facets.project %}
+    <span class="tag is-info">{{ item.project }} ({{ item.count }})</span>
+    {% endfor %}
+</div>
+{% endif %}
+
+{% if facets.vehicle %}
+<h3 class="title is-5">車両分布</h3>
+<div class="tags">
+    {% for item in facets.vehicle %}
+    <span class="tag is-link">{{ item.vehicle__model_code }} ({{ item.count }})</span>
+    {% endfor %}
+</div>
+{% endif %}
+
+{% if facets.channel_category %}
+<h3 class="title is-5">チャネルカテゴリ</h3>
+<div class="tags">
+    {% for item in facets.channel_category %}
+    <span class="tag is-warning">{{ item.category }} ({{ item.count }})</span>
+    {% endfor %}
+</div>
+{% endif %}
+{% endblock %}

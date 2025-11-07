@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1 class="title">データアップロード</h1>
+<p class="subtitle">計測データファイルを直接アップロードして取り込みジョブを作成します。</p>
+
+{% if messages %}
+<div class="block">
+    {% for message in messages %}
+    <div class="notification is-primary">{{ message }}</div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<form method="post" enctype="multipart/form-data" class="box">
+    {% csrf_token %}
+    {% if form.non_field_errors %}
+    <div class="notification is-danger">
+        {% for error in form.non_field_errors %}
+        <p>{{ error }}</p>
+        {% endfor %}
+    </div>
+    {% endif %}
+    <div class="field">
+        <label class="label" for="id_measurement_set">{{ form.measurement_set.label }}</label>
+        <div class="control">{{ form.measurement_set }}</div>
+        {% if form.measurement_set.help_text %}
+        <p class="help">{{ form.measurement_set.help_text }}</p>
+        {% endif %}
+        {% for error in form.measurement_set.errors %}
+        <p class="help is-danger">{{ error }}</p>
+        {% endfor %}
+    </div>
+    <div class="field">
+        <label class="label" for="id_data_file">{{ form.data_file.label }}</label>
+        <div class="control">{{ form.data_file }}</div>
+        {% for error in form.data_file.errors %}
+        <p class="help is-danger">{{ error }}</p>
+        {% endfor %}
+    </div>
+    <div class="field">
+        <label class="label" for="id_source">{{ form.source.label }}</label>
+        <div class="control">{{ form.source }}</div>
+        {% for error in form.source.errors %}
+        <p class="help is-danger">{{ error }}</p>
+        {% endfor %}
+    </div>
+    <div class="field">
+        <label class="label" for="id_format">{{ form.format.label }}</label>
+        <div class="control">{{ form.format }}</div>
+        {% for error in form.format.errors %}
+        <p class="help is-danger">{{ error }}</p>
+        {% endfor %}
+    </div>
+    <div class="field">
+        <label class="label" for="id_notes">{{ form.notes.label }}</label>
+        <div class="control">{{ form.notes }}</div>
+        {% for error in form.notes.errors %}
+        <p class="help is-danger">{{ error }}</p>
+        {% endfor %}
+    </div>
+    <div class="field is-grouped">
+        <div class="control">
+            <button class="button is-link" type="submit">アップロード</button>
+        </div>
+    </div>
+</form>
+
+<h2 class="title is-4 mt-5">最近の取り込みジョブ</h2>
+{% if recent_jobs %}
+<table class="table is-fullwidth">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>計測セット</th>
+            <th>ファイル</th>
+            <th>サイズ</th>
+            <th>作成日時</th>
+            <th>ステータス</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for job in recent_jobs %}
+        <tr>
+            <td>#{{ job.pk }}</td>
+            <td>{{ job.measurement_set.title }}</td>
+            <td>{{ job.file_metadata.meta.original_name|default:job.file_metadata.path }}</td>
+            <td>{{ job.file_metadata.size|filesizeformat }}</td>
+            <td>{{ job.created_at|date:"Y-m-d H:i" }}</td>
+            <td>{{ job.status }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>まだアップロードされたジョブはありません。</p>
+{% endif %}
+{% endblock %}
