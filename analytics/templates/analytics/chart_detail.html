@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>{{ measurement_set.title }} プレビュー</h1>
+<div id="plotly-chart">
+    {{ plot_html|safe }}
+</div>
+<p>チャネル: {{ channel_names|join:", " }}</p>
+{% endblock %}

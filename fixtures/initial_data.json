@@ -1,0 +1,32 @@
+[
+  {
+    "model": "catalog.vehicle",
+    "pk": 1,
+    "fields": {
+      "vin": "SAMPLEVIN001",
+      "model_code": "RX-Prototype",
+      "year": 2024,
+      "powertrain": "EV",
+      "tags": {"segment": "SUV", "color": "silver"}
+    }
+  },
+  {
+    "model": "labeling.labelschema",
+    "pk": 1,
+    "fields": {
+      "name": "走行評価",
+      "tree_path": "root.performance",
+      "rules": {"levels": ["GOOD", "WARN", "NG"]}
+    }
+  },
+  {
+    "model": "labeling.label",
+    "pk": 1,
+    "fields": {
+      "schema": 1,
+      "name": "加速良好",
+      "description": "ドライバビリティ評価",
+      "meta": {"threshold": 3.5}
+    }
+  }
+]
